@@ -1,0 +1,48 @@
+version: '3'
+services:
+
+  sites-proxy:
+    image: fromdoppler/sites-proxy:beta
+    networks:
+      - sites
+    ports:
+      - 80:80
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+  
+  doppler-webapp:
+    image: fromdoppler/doppler-webapp:production-v1
+    networks:
+      - sites
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+
+  doppler-docker-playground:
+    image: fromdoppler/doppler-docker-playground:beta
+    networks:
+      - sites
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+
+  doppler-forms:
+    image: fromdoppler/doppler-forms:beta
+    networks:
+      - sites
+    deploy:
+      replicas: 1
+      mode: replicated
+      restart_policy:
+        condition: on-failure
+
+networks:
+  sites:
+    external: false
