@@ -132,4 +132,5 @@ overall progress: 2 out of 2 tasks
 2/2: running   [==================================================>]
 verify: Service converged
 
+# Enough manual micro-experiments, it continues in `local-experiments/update.sh`
 ```

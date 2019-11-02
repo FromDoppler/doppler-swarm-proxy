@@ -1,0 +1,16 @@
+# I have updated hosts file with this:
+#
+#     127.0.0.1       localhost play.fromdoppler.com app.fromdoppler.com forms.dopplerpages.com
+#
+
+###
+GET http://localhost
+###
+GET http://play.fromdoppler.com
+###
+GET http://app.fromdoppler.com
+###
+GET http://dopplerpages.com
+###
+GET http://127.0.0.1
+
