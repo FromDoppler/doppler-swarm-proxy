@@ -2,7 +2,7 @@ version: '3'
 services:
 
   sites-proxy:
-    image: fromdoppler/sites-proxy:beta
+    image: fromdoppler/sites-proxy:pre-production
     networks:
       - sites
     ports:

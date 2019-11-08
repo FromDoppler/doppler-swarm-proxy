@@ -3,20 +3,15 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                sh 'docker build ./sites-proxy'
+                sh '''docker build  \\
+                    -t "fromdoppler/sites-proxy:production-commit-${GIT_COMMIT}" \\
+                    ./sites-proxy'''
             }
         }
-        stage('Deploy build image') {
+        stage('Publish pre release version images') {
+            // It is a temporal step, in the future we will only publish final version images
             steps {
-                sh 'sh ./publish-to-dockerhub.sh build-$BUILD_NUMBER'
-            }
-        }
-        stage('Deploy for production') {
-            when {
-                branch 'master'
-            }
-            steps {
-                sh 'sh ./publish-to-dockerhub.sh beta'
+                sh 'sh ./publish-commit-image-to-dockerhub.sh production ${GIT_COMMIT} v0.0.0 commit-${GIT_COMMIT}'
             }
         }
     }
