@@ -5,6 +5,7 @@ pipeline {
             steps {
                 sh '''docker build  \\
                     -t "fromdoppler/sites-proxy:production-commit-${GIT_COMMIT}" \\
+                    --build-arg version=production-commit-${GIT_COMMIT} \\
                     ./sites-proxy'''
             }
         }
