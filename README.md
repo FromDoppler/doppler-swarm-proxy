@@ -16,19 +16,13 @@ _doppler-webapp_ are only exposing non-encrypted ports.
 But, _doppler-forms_ has to deal with different and non-static keys, for that reason it is also
 exposing a encrypted port.
 
-## Log
+## Usage
 
-### References
+### Install prerequisites
 
-* `Server1` Name: `1042791-rabbitmq`, IP: `172.25.48.222`
-* `Server2` Name: `1022851-mta.cloudspace`, IP: `172.24.16.221`
-* `user1`, `user2`, `user3`: usernames of the server's administrator users
+Install _Docker_ in all nodes, configure the users and initialize it.
 
 ```bash
-# In `Server1` and `Server2`
-#
-# Following https://docs.docker.com/install/linux/docker-ce/centos/
-
 sudo yum install -y yum-utils \
   device-mapper-persistent-data \
   lvm2
@@ -39,63 +33,103 @@ sudo yum-config-manager \
 
 sudo yum install docker-ce docker-ce-cli containerd.io
 
-# Following https://docs.docker.com/install/linux/linux-postinstall/
-
 sudo groupadd docker
 
-sudo usermod -aG docker user1
-sudo usermod -aG docker user2
-sudo usermod -aG docker user3
+sudo usermod -aG docker ${user}
 
 newgrp docker
 
 sudo systemctl enable docker
 sudo systemctl stop docker
 sudo systemctl start docker
+```
 
-# In `Server1`
-# Following https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/
+See also:
 
+* [Get Docker Engine - Community for CentOS](https://docs.docker.com/install/linux/docker-ce/centos/)
+* [Post-installation steps for Linux](https://docs.docker.com/install/linux/linux-postinstall/)
+
+### Create a swarm
+
+Initialize the swarm with the first node as manager (by the moment `1042791-rabbitmq / 172.25.48.222`).
+
+```bash
 $ docker swarm init --advertise-addr 172.25.48.222
 Swarm initialized: current node (9zap4vc1suo3bxsr4ohwm1wpi) is now a manager.
 
 To add a worker to this swarm, run the following command:
 
-    docker swarm join --token SWMTKN-1-35***qb5-cdm***276 172.25.48.222:2377
+    docker swarm join --token SWMTKN-1-3ytm******************************************9u3b-eh8h*****************4zfn 172.25.48.222:2377
 
 To add a manager to this swarm, run 'docker swarm join-token manager' and follow the instructions.
+```
 
-# Following https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/
+See also:
 
-# In `Server2`
+* [Create a swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/create-swarm/)
 
-docker swarm join --token SWMTKN-1-35***qb5-cdm***276 172.25.48.222:2377
+### Add another manager to the swarm
 
-# Quiero hacer los dos managers
+It is recommended having odd number of managers. If it is not possible having three, having one is better than two,
+because if you have 2 and one of them goes down, the other one does not know that.
 
-# In `Server1`
+Get the join information from one of the existent swarm nodes (in our example `1042791-rabbitmq / 172.25.48.222`).
 
+```bash
 $ docker swarm join-token manager
 To add a manager to this swarm, run the following command:
 
-    docker swarm join --token SWMTKN-1-35***qb5-eqv***ls3 172.25.48.222:2377
+    docker swarm join --token SWMTKN-1-3ytm******************************************9u3b-a6ii*****************itve 172.25.48.222:2377
+```
 
-# In `Server2`
+Run the generated command line in the new node (in our example `1022851-mta.cloudspace / 172.24.16.221`).
 
+```bash
+docker swarm join --token SWMTKN-1-3ytm******************************************9u3b-a6ii*****************itve 172.25.48.222:2377
+```
+
+See also:
+
+* [Add nodes to the swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/)
+
+### Add a worker to the swarm
+
+Get the join information from one of the existent swarm nodes (in our example `1042791-rabbitmq / 172.25.48.222`).
+
+```bash
+$ docker swarm join-token worker
+To add a worker to this swarm, run the following command:
+
+    docker swarm join --token SWMTKN-1-3ytm******************************************9u3b-eh8h*****************4zfn 172.25.48.222:2377
+```
+
+Run the generated command line in the new node.
+
+```bash
+docker swarm join --token SWMTKN-1-3ytm******************************************9u3b-eh8h*****************4zfn 172.25.48.222:2377
+```
+
+See also:
+
+* [Add nodes to the swarm](https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/)
+
+### Leave a swarm
+
+If you have only two managers and leave the swarm, the other one will not work alone without an explicit command.
+
+```bash
 docker swarm leave
-docker swarm join --token SWMTKN-1-35***qb5-eqv***ls3 172.25.48.222:2377
+```
 
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/inspect-service/
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/scale-service/
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/delete-service/
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/delete-service/
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/
-# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/drain-node/
-# Skipping https://docs.docker.com/engine/swarm/ingress/
+### Login
 
-# In `Service1` and `Server2`
+If I am not wrong, login is only required in one node.
 
+To download images we are using the user `dnoyareader`.
+
+**TODO:** We should learn about credential helpers.
+
+```bash
 $ docker login
 Login with your Docker ID to push and pull images from Docker Hub. If you dont have a Docker ID, head over to https://hub.docker.com to create one.
 Username: dnoyareader
@@ -105,8 +139,45 @@ Configure a credential helper to remove this warning. See
 https://docs.docker.com/engine/reference/commandline/login/#credentials-store
 
 Login Succeeded
+```
 
-# In any server
+### Prepare our swarm stack
+
+In one of the swarm managers node run the following code (by the moment `1042791-rabbitmq / 172.25.48.222`).
+
+```bash
+sudo mkdir /doppler-swarm
+sudo chgrp docker /doppler-swarm -R
+sudo chmod g+ws doppler-swarm
+cd /doppler-swarm
+wget https://raw.githubusercontent.com/FromDoppler/doppler-swarm/master/docker-compose.yml
+
+$ docker stack deploy -c docker-compose.yml --with-registry-auth doppler-swarm
+Creating network doppler-swarm_sites
+Creating service doppler-swarm_doppler-webapp
+Creating service doppler-swarm_doppler-docker-playground
+Creating service doppler-swarm_doppler-forms
+Creating service doppler-swarm_sites-proxy
+```
+
+### Remove our swarm stack
+
+```bash
+docker stack rm doppler-swarm
+```
+
+## Drafts
+
+```bash
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/add-nodes/
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/inspect-service/
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/scale-service/
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/delete-service/
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/delete-service/
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/rolling-update/
+# Skipping https://docs.docker.com/engine/swarm/swarm-tutorial/drain-node/
+# Skipping https://docs.docker.com/engine/swarm/ingress/
+
 
 docker login -u dnoyareader -p c56***d80
 
@@ -132,5 +203,5 @@ overall progress: 2 out of 2 tasks
 2/2: running   [==================================================>]
 verify: Service converged
 
-# Enough manual micro-experiments, it continues in `local-experiments/update.sh`
+# Enough manual micro-experiments, it continues in `update-local.sh`
 ```
