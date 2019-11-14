@@ -1,8 +1,12 @@
-version: '3'
+version: '3.7'
 services:
 
   sites-proxy:
     image: fromdoppler/sites-proxy:pre-production
+    depends_on: 
+      - doppler-webapp
+      - doppler-docker-playground
+      - doppler-forms
     networks:
       - sites
     ports:
