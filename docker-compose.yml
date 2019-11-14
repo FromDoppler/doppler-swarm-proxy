@@ -2,7 +2,7 @@ version: '3.7'
 services:
 
   sites-proxy:
-    image: fromdoppler/sites-proxy:pre-production
+    image: fromdoppler/sites-proxy:production-v0
     depends_on: 
       - doppler-webapp
       - doppler-docker-playground
@@ -28,7 +28,7 @@ services:
         condition: on-failure
 
   doppler-docker-playground:
-    image: fromdoppler/doppler-docker-playground:beta
+    image: fromdoppler/doppler-docker-playground:production-v0
     networks:
       - sites
     deploy:
@@ -38,7 +38,7 @@ services:
         condition: on-failure
 
   doppler-forms:
-    image: fromdoppler/doppler-forms:beta
+    image: fromdoppler/doppler-forms:production-v0
     networks:
       - sites
     deploy:
