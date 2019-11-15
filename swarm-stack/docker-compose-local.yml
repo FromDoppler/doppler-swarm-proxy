@@ -1,4 +1,4 @@
-version: '3'
+version: '3.7'
 services:
 
   sites-proxy:
@@ -7,16 +7,13 @@ services:
       replicas: 1
   
   doppler-webapp:
-    image: fromdoppler/doppler-webapp:production-v1
     deploy:
       replicas: 1
 
   doppler-docker-playground:
-    image: fromdoppler/doppler-docker-playground:beta
     deploy:
       replicas: 1
 
   doppler-forms:
-    image: fromdoppler/doppler-forms:beta
     deploy:
       replicas: 1
