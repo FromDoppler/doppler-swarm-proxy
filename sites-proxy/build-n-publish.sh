@@ -106,7 +106,7 @@ canonicalTag=${preReleasePrefix}${environment}-${versionFullForTag}
 docker build \
     -t ${imageName}:${canonicalTag} \
     --build-arg version=${preReleasePrefix}${environment}-${versionFull} \
-    ./sites-proxy
+    .
 
 docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}
 docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayor}
