@@ -6,15 +6,21 @@
 ###
 GET http://localhost
 ###
+GET http://127.0.0.1
+###
+GET http://127.0.0.1/version.txt
+
+###
 GET http://play.fromdoppler.com
 ###
-GET http://app.fromdoppler.com
+GET http://play.fromdoppler.com/version.txt
 
+###
+GET http://app.fromdoppler.com
 ###
 GET http://app.fromdoppler.com/version.txt
 
 ###
 GET http://dopplerpages.com
 ###
-GET http://127.0.0.1
-
+GET http://dopplerpages.com/version.txt
