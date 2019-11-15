@@ -1,5 +1,5 @@
 docker stack rm doppler-swarm
-docker build -t fromdoppler/sites-proxy:local sites-proxy/.
+docker build -t fromdoppler/sites-proxy:local ../sites-proxy
 # In place of the previous line, I tried this:
 #     docker-compose build
 # Based on https://stackoverflow.com/questions/48396459/docker-swarm-build-configuration-in-docker-compose-file-ignored-during-stack#54448433
