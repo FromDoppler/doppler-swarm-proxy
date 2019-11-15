@@ -100,21 +100,26 @@ else
 fi
 # endregion Ugly code to deal with versions
 
-docker tag fromdoppler/sites-proxy:${environment}-commit-${commit} fromdoppler/sites-proxy:${preReleasePrefix}${environment}
-docker tag fromdoppler/sites-proxy:${environment}-commit-${commit} fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayor}
-docker tag fromdoppler/sites-proxy:${environment}-commit-${commit} fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayorMinor}
-docker tag fromdoppler/sites-proxy:${environment}-commit-${commit} fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayorMinorPatch}
-docker tag fromdoppler/sites-proxy:${environment}-commit-${commit} fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayorMinorPatchPre}
-docker tag fromdoppler/sites-proxy:${environment}-commit-${commit} fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionFullForTag}
+imageName=fromdoppler/sites-proxy
+canonicalTag=${preReleasePrefix}${environment}-${versionFullForTag}
+
+docker build \
+    -t ${imageName}:${canonicalTag} \
+    --build-arg version=${preReleasePrefix}${environment}-${versionFull} \
+    ./sites-proxy
+
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayor}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinor}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatch}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatchPre}
 
 # TODO: It could break concurrent deployments with different docker accounts
 docker login -u="$DOCKER_WRITTER_USERNAME" -p="$DOCKER_WRITTER_PASSWORD"
 
-# TODO: push all tags
-
-docker push fromdoppler/sites-proxy:${preReleasePrefix}${environment}
-docker push fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayor}
-docker push fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayorMinor}
-docker push fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayorMinorPatch}
-docker push fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionMayorMinorPatchPre}
-docker push fromdoppler/sites-proxy:${preReleasePrefix}${environment}-${versionFullForTag}
+docker push ${imageName}:${canonicalTag}
+docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatchPre}
+docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatch}
+docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinor}
+docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayor}
+docker push ${imageName}:${preReleasePrefix}${environment}

@@ -3,17 +3,12 @@ pipeline {
     stages {
         stage('Build') {
             steps {
-                // TODO, for final versions, ensure having the proper version in version.txt in place of the commit number
-                sh '''docker build  \\
-                    -t "fromdoppler/sites-proxy:production-commit-${GIT_COMMIT}" \\
-                    --build-arg version=production-commit-${GIT_COMMIT} \\
-                    ./sites-proxy'''
+                sh 'docker build ./sites-proxy'
             }
         }
         stage('Publish pre release version images') {
-            // It is a temporal step, in the future we will only publish final version images
             steps {
-                sh 'sh ./publish-commit-image-to-dockerhub.sh production ${GIT_COMMIT} v0.0.0 commit-${GIT_COMMIT}'
+                sh 'sh ./build-n-publish.sh production ${GIT_COMMIT} v0.0.0 commit-${GIT_COMMIT}'
             }
         }
         stage('Publish final version images') {
@@ -23,8 +18,7 @@ pipeline {
                 }
             }
             steps {
-                // TODO, ensure having the proper version in version.txt in place of the commit number
-                sh 'sh publish-commit-image-to-dockerhub.sh production ${GIT_COMMIT} ${TAG_NAME}'
+                sh 'sh ./build-n-publish.sh production ${GIT_COMMIT} ${TAG_NAME}'
             }
         }
         stage('Generate version') {
