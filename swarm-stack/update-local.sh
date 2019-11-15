@@ -16,10 +16,6 @@ export MSYS_NO_PATHCONV=1
 export MSYS2_ARG_CONV_EXCL="*"
 
 docker stack rm doppler-swarm
-# In place of the previous line, I tried this:
-#     docker-compose build
-# Based on https://stackoverflow.com/questions/48396459/docker-swarm-build-configuration-in-docker-compose-file-ignored-during-stack#54448433
-# but it does not work, it said: "sites-proxy uses an image, skipping"
 docker build --build-arg version=local-$(date +"%Y%m%d_%H%M") -t fromdoppler/sites-proxy:local ../sites-proxy
 sleep 7
 docker-compose -f docker-compose.yml -f docker-compose-local.yml config > docker-stack.yml
