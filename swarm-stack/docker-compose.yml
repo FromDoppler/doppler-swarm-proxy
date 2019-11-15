@@ -29,6 +29,11 @@ services:
 
   doppler-docker-playground:
     image: fromdoppler/doppler-docker-playground:production-v0
+    secrets:
+      - source: AnotherSecretSetting
+        target: PlaygroundSettings__AnotherSecretSetting
+      - source: doppler-docker-playground_appsettings.Secret.json
+        target: appsettings.Secret.json
     networks:
       - sites
     deploy:
@@ -50,3 +55,9 @@ services:
 networks:
   sites:
     external: false
+
+secrets:
+  AnotherSecretSetting:
+    file: ./secrets/AnotherSecretSetting
+  doppler-docker-playground_appsettings.Secret.json:
+    file: ./secrets/doppler-docker-playground/appsettings.Secret.json
