@@ -143,6 +143,8 @@ Login Succeeded
 
 ### Prepare our swarm stack
 
+We need to prepare a server with the files required by _docker stack deploy_.
+
 In one of the swarm managers node run the following code (by the moment `1042791-rabbitmq / 172.25.48.222`).
 
 ```bash
@@ -150,7 +152,9 @@ sudo mkdir /doppler-swarm
 sudo chgrp docker /doppler-swarm -R
 sudo chmod g+ws doppler-swarm
 cd /doppler-swarm
-wget https://raw.githubusercontent.com/FromDoppler/doppler-swarm/master/docker-compose.yml
+wget https://raw.githubusercontent.com/FromDoppler/doppler-swarm/master/swarm-stack/docker-compose.yml
+# TODO: determine how to also download secrets and other files
+# See files in: https://github.com/FromDoppler/doppler-swarm/tree/master/swarm-stack
 
 $ docker stack deploy -c docker-compose.yml --with-registry-auth doppler-swarm
 Creating network doppler-swarm_sites
@@ -165,6 +169,22 @@ Creating service doppler-swarm_sites-proxy
 ```bash
 docker stack rm doppler-swarm
 ```
+
+## Useful commands
+
+### Access to a running container
+
+```bash
+docker exec -it doppler-swarm_sites-proxy.1.p5bffwi5c0nyy8hibr0j7z81u /bin/bash
+```
+
+### Run a image with bash in place of the default entry point
+
+```bash
+docker run --rm -it --entrypoint=/bin/sh fromdoppler/doppler-forms:beta
+```
+
+
 
 ## Drafts
 
