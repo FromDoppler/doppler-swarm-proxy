@@ -1,28 +1,22 @@
 #!/bin/sh
 
-environment=$1
-commit=$2
-version=$3
-versionPre=$4
+commit=$1
+version=$2
+versionPre=$3
 # Examples:
-#   sh publish-to-dockerhub.sh develop 94f85efb9c3689f409104ef7cde6813652ca59fb v12.34.5
-#   sh publish-to-dockerhub.sh production 94f85efb9c3689f409104ef7cde6813652ca59fb v12.34.5 beta1
-#   sh publish-to-dockerhub.sh demo 94f85efb9c3689f409104ef7cde6813652ca59fb v12.34.5 pr123
+#   sh build-n-publish.sh 94f85efb9c3689f409104ef7cde6813652ca59fb v12.34.5
+#   sh build-n-publish.sh 94f85efb9c3689f409104ef7cde6813652ca59fb v12.34.5 beta1 # it is a pre-release
+#   sh build-n-publish.sh 94f85efb9c3689f409104ef7cde6813652ca59fb v12.34.5 pr123 # it is a pre-release
 
 
-if [ -z ${environment} ]
-then
-  echo "Missing environment (1st parameter)"
-  exit 1
-fi
 if [ -z ${commit} ]
 then
-  echo "Missing commit (2nd parameter)"
+  echo "Missing commit (1st parameter)"
   exit 1
 fi
 if [ -z ${version} ]
 then
-  echo "Missing version (3th parameter)"
+  echo "Missing version (2nd parameter)"
   exit 1
 fi
 
@@ -101,25 +95,23 @@ fi
 # endregion Ugly code to deal with versions
 
 imageName=fromdoppler/sites-proxy
-canonicalTag=${preReleasePrefix}${environment}-${versionFullForTag}
+canonicalTag=${preReleasePrefix}${versionFullForTag}
 
 docker build \
     -t ${imageName}:${canonicalTag} \
-    --build-arg version=${preReleasePrefix}${environment}-${versionFull} \
+    --build-arg version=${preReleasePrefix}${versionFull} \
     .
 
-docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}
-docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayor}
-docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinor}
-docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatch}
-docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatchPre}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${versionMayor}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${versionMayorMinor}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${versionMayorMinorPatch}
+docker tag ${imageName}:${canonicalTag} ${imageName}:${preReleasePrefix}${versionMayorMinorPatchPre}
 
 # TODO: It could break concurrent deployments with different docker accounts
 docker login -u="$DOCKER_WRITTER_USERNAME" -p="$DOCKER_WRITTER_PASSWORD"
 
 docker push ${imageName}:${canonicalTag}
-docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatchPre}
-docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinorPatch}
-docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayorMinor}
-docker push ${imageName}:${preReleasePrefix}${environment}-${versionMayor}
-docker push ${imageName}:${preReleasePrefix}${environment}
+docker push ${imageName}:${preReleasePrefix}${versionMayorMinorPatchPre}
+docker push ${imageName}:${preReleasePrefix}${versionMayorMinorPatch}
+docker push ${imageName}:${preReleasePrefix}${versionMayorMinor}
+docker push ${imageName}:${preReleasePrefix}${versionMayor}

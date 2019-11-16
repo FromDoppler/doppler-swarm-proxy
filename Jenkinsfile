@@ -8,7 +8,7 @@ pipeline {
         }
         stage('Publish pre release version images') {
             steps {
-                sh 'sh ./sites-proxy/build-n-publish.sh production ${GIT_COMMIT} v0.0.0 commit-${GIT_COMMIT}'
+                sh 'sh ./sites-proxy/build-n-publish.sh ${GIT_COMMIT} v0.0.0 commit-${GIT_COMMIT}'
             }
         }
         stage('Publish final version images') {
@@ -18,7 +18,7 @@ pipeline {
                 }
             }
             steps {
-                sh 'sh ./sites-proxy/build-n-publish.sh production ${GIT_COMMIT} ${TAG_NAME}'
+                sh 'sh ./sites-proxy/build-n-publish.sh ${GIT_COMMIT} ${TAG_NAME}'
             }
         }
         stage('Generate version') {
