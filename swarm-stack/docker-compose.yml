@@ -44,6 +44,9 @@ services:
 
   doppler-forms:
     image: fromdoppler/doppler-forms:v0
+    secrets:
+      - source: doppler-forms_appsettings.Secret.json
+        target: appsettings.Secret.json
     networks:
       - sites
     deploy:
@@ -61,3 +64,5 @@ secrets:
     file: ./secrets/AnotherSecretSetting
   doppler-docker-playground_appsettings.Secret.json:
     file: ./secrets/doppler-docker-playground/appsettings.Secret.json
+  doppler-forms_appsettings.Secret.json:
+    file: ./secrets/doppler-forms/appsettings.Secret.json
