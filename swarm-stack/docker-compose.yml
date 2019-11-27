@@ -47,6 +47,9 @@ services:
     secrets:
       - source: doppler-forms_appsettings.Secret.json
         target: appsettings.Secret.json
+      - EncryptionSettings__InitVectorAsAsciiString
+      - EncryptionSettings__SaltValueAsAsciiString
+      - EncryptionSettings__Password
     networks:
       - sites
     deploy:
@@ -66,3 +69,9 @@ secrets:
     file: ./secrets/doppler-docker-playground/appsettings.Secret.json
   doppler-forms_appsettings.Secret.json:
     file: ./secrets/doppler-forms/appsettings.Secret.json
+  EncryptionSettings__InitVectorAsAsciiString:
+    file: ./secrets/EncryptionSettings/InitVectorAsAsciiString
+  EncryptionSettings__SaltValueAsAsciiString:
+    file: ./secrets/EncryptionSettings/SaltValueAsAsciiString
+  EncryptionSettings__Password:
+    file: ./secrets/EncryptionSettings/Password
