@@ -174,11 +174,15 @@ docker stack rm doppler-swarm
 
 ### Access to a running container
 
+Access into running container to inspect with bash commands inside.
+
 ```bash
 docker exec -it doppler-swarm_sites-proxy.1.p5bffwi5c0nyy8hibr0j7z81u /bin/bash
 ```
 
 ### Run a image with bash in place of the default entry point
+
+You could use this to access into a failing image to run bash commands inside to see what happened, get a detailed log.
 
 ```bash
 docker run --rm -it --entrypoint=/bin/sh fromdoppler/doppler-forms:beta
