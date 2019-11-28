@@ -12,6 +12,11 @@ GET http://127.0.0.1/version.txt
 
 ###
 GET http://play.fromdoppler.com
+
+###
+GET http://play.fromdoppler.com
+###
+GET https://play.fromdoppler.com
 ###
 GET http://play.fromdoppler.com/version.txt
 
