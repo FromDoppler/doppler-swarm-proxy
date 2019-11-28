@@ -6,6 +6,7 @@ ARG version=unknown
 RUN echo $version > /usr/share/nginx/html/version.txt
 
 EXPOSE 80/tcp
+EXPOSE 443/tcp
 
 CMD ["/bin/sh", "-c", "exec nginx -g 'daemon off;';"]
 
