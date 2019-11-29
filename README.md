@@ -2,7 +2,11 @@
 
 Here we will store the configuration of our experimental Docker Swarm Architecture.
 
-And probably here will define the image for _Doppler Swarm Proxy_ with the required configuration.
+It also defines the image for _Doppler Swarm Proxy_ with the required configuration.
+
+**IMPORTANT**: the folder _swarm-stack_ is very useful to test locally, but its contents could be not up-to-date.
+
+See the production content in the repo [doppler-swarm-devops](https://github.com/MakingSense/doppler-swarm-devops).
 
 ## Architecture
 
