@@ -18,6 +18,9 @@ services:
       restart_policy:
         condition: on-failure
     secrets:
+      - certificates__fromdoppler.com-20201108.crt
+      - certificates__fromdoppler.com-20201108.key
+      # Obsolete:
       - site.crt
       - site.key
   
@@ -67,19 +70,28 @@ networks:
     external: false
 
 secrets:
+  # Tests / Demo / Playground
   AnotherSecretSetting:
     file: ./secrets/AnotherSecretSetting
   doppler-docker-playground_appsettings.Secret.json:
     file: ./secrets/doppler-docker-playground/appsettings.Secret.json
+  # Forms
   doppler-forms_appsettings.Secret.json:
     file: ./secrets/doppler-forms/appsettings.Secret.json
+  # Encryption Settings
   EncryptionSettings__InitVectorAsAsciiString:
     file: ./secrets/EncryptionSettings/InitVectorAsAsciiString
   EncryptionSettings__SaltValueAsAsciiString:
     file: ./secrets/EncryptionSettings/SaltValueAsAsciiString
   EncryptionSettings__Password:
     file: ./secrets/EncryptionSettings/Password
+  # Obsolete:
   site.crt:
-    file: ./secrets/site.crt
+    file: ./secrets/certificates/fromdoppler.com-20201108.crt
   site.key:
-    file: ./secrets/site.key
+    file: ./secrets/certificates/fromdoppler.com-20201108.key
+  # Certificates fromdoppler.com
+  certificates__fromdoppler.com-20201108.crt:
+    file: ./secrets/certificates/fromdoppler.com-20201108.crt
+  certificates__fromdoppler.com-20201108.key:
+    file: ./secrets/certificates/fromdoppler.com-20201108.key
