@@ -18,6 +18,8 @@ services:
       restart_policy:
         condition: on-failure
     secrets:
+      - certificates__dopplerpages.com-20201202.crt
+      - certificates__dopplerpages.com-20201202.key
       - certificates__fromdoppler.com-20201108.crt
       - certificates__fromdoppler.com-20201108.key
       # Obsolete:
@@ -95,3 +97,8 @@ secrets:
     file: ./secrets/certificates/fromdoppler.com-20201108.crt
   certificates__fromdoppler.com-20201108.key:
     file: ./secrets/certificates/fromdoppler.com-20201108.key
+  # Certificates dopplerpages.com
+  certificates__dopplerpages.com-20201202.crt:
+    file: ./secrets/certificates/dopplerpages.com-20201202.crt
+  certificates__dopplerpages.com-20201202.key:
+    file: ./secrets/certificates/dopplerpages.com-20201202.key
